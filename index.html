@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jay's Tools | Rolling Secret</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff3131;
+            --neon-gold: #ffcc00;
+            --dark-bg: #050505;
+            --accent-primary: var(--neon-blue);
+            --accent-secondary: var(--neon-purple);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1, .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Dynamic Background Glow */
+        #bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(188, 19, 254, 0.15) 0%, transparent 40%);
+        }
+
+        /* Neon Glass Card Styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2rem 4rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .glass-card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* Rolling Away Animation */
+        .roll-away {
+            animation: rollAway 1.2s forwards cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            pointer-events: none;
+        }
+
+        @keyframes rollAway {
+            0% {
+                transform: translateX(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(150vw) rotate(1080deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Secret Message Styling */
+        #message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 900px;
+            display: none;
+            text-align: center;
+        }
+
+        .roll-in-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, var(--neon-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(25px);
+            opacity: 0;
+            animation: rollAndUnblur 3.5s forwards cubic-bezier(0.2, 0, 0.2, 1);
+        }
+
+        @keyframes rollAndUnblur {
+            0% {
+                transform: translateX(-100vw) rotate(-720deg);
+                opacity: 0;
+                filter: blur(30px);
+            }
+            50% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+                filter: blur(15px);
+            }
+            100% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .roll-in-text { font-size: 1.75rem; }
+            .glass-card { padding: 1.5rem 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-glow"></div>
+
+    <div id="wrapper">
+        <!-- Main Interactive Button -->
+        <div id="main-btn" class="glass-card">
+            <span class="heading-font text-gradient text-xl tracking-widest">Access Files</span>
+        </div>
+        
+        <!-- Animated Message -->
+        <div id="message-container">
+            <h1 class="roll-in-text" id="secret-message"></h1>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('main-btn');
+        const messageContainer = document.getElementById('message-container');
+        const messageText = document.getElementById('secret-message');
+        const bgGlow = document.getElementById('bg-glow');
+
+        // Mouse move effect for background glow (from your theme)
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            bgGlow.style.setProperty('--x', `${x}%`);
+            bgGlow.style.setProperty('--y', `${y}%`);
+        });
+
+        const content = "if you are seeing this your probably kossler or levi and if you are kossler get out and follow the rules";
+
+        btn.addEventListener('click', () => {
+            // 1. Roll the button away
+            btn.classList.add('roll-away');
+
+            // 2. Set the text
+            messageText.innerText = content;
+            
+            // 3. Transition to secret message
+            setTimeout(() => {
+                btn.style.display = 'none';
+                messageContainer.style.display = 'block';
+                messageText.classList.add('roll-in-text');
+                
+                // Change glow to Gold as per "owner-active" logic in your theme
+                bgGlow.style.background = `
+                    radial-gradient(circle at 50% 50%, rgba(255, 204, 0, 0.2) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 204, 0, 0.1) 0%, transparent 40%)
+                `;
+            }, 500);
+        });
+    </script>
+</body>
+</html>
